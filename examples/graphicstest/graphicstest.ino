@@ -150,7 +150,7 @@ unsigned long testText() {
 }
 
 unsigned long testLines(uint16_t color) {
-  unsigned long start, t;
+  unsigned long start, t = 0;
   int           x1, y1, x2, y2,
                 w = tft.width(),
                 h = tft.height();
@@ -164,7 +164,7 @@ unsigned long testLines(uint16_t color) {
   for(x2=0; x2<w; x2+=6) tft.drawLine(x1, y1, x2, y2, color);
   x2    = w - 1;
   for(y2=0; y2<h; y2+=6) tft.drawLine(x1, y1, x2, y2, color);
-  t     = micros() - start; // fillScreen doesn't count against timing
+  t    += micros() - start; // fillScreen doesn't count against timing
 
   yield();
   tft.fillScreen(ILI9341_BLACK);
@@ -203,9 +203,10 @@ unsigned long testLines(uint16_t color) {
   for(x2=0; x2<w; x2+=6) tft.drawLine(x1, y1, x2, y2, color);
   x2    = 0;
   for(y2=0; y2<h; y2+=6) tft.drawLine(x1, y1, x2, y2, color);
+  t    += micros() - start;
 
   yield();
-  return micros() - start;
+  return t;
 }
 
 unsigned long testFastLines(uint16_t color1, uint16_t color2) {
@@ -316,7 +317,6 @@ unsigned long testFilledTriangles() {
                    cy = tft.height() / 2 - 1;
 
   tft.fillScreen(ILI9341_BLACK);
-  start = micros();
   for(i=min(cx,cy); i>10; i-=5) {
     start = micros();
     tft.fillTriangle(cx, cy - i, cx - i, cy + i, cx + i, cy + i,
